@@ -35,7 +35,14 @@ class Up implements Input {
 }
 class Down implements Input {
   handle() {
-    moveVertical(-1);
+    if (false)
+      moveHorizontal(-1);
+    else if (false)
+      moveHorizontal(1);
+    else if (true)
+      moveVertical(-1);
+    else if (false)
+      moveVertical(1);
   }
 }
 
