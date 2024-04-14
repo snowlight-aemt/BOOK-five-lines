@@ -16,13 +16,42 @@ var Tile;
     Tile[Tile["KEY2"] = 10] = "KEY2";
     Tile[Tile["LOCK2"] = 11] = "LOCK2";
 })(Tile || (Tile = {}));
-var Input;
-(function (Input) {
-    Input[Input["UP"] = 0] = "UP";
-    Input[Input["DOWN"] = 1] = "DOWN";
-    Input[Input["LEFT"] = 2] = "LEFT";
-    Input[Input["RIGHT"] = 3] = "RIGHT";
-})(Input || (Input = {}));
+var Right = /** @class */ (function () {
+    function Right() {
+    }
+    Right.prototype.isDown = function () { return false; };
+    Right.prototype.isLeft = function () { return false; };
+    Right.prototype.isRight = function () { return true; };
+    Right.prototype.isUp = function () { return false; };
+    return Right;
+}());
+var Up = /** @class */ (function () {
+    function Up() {
+    }
+    Up.prototype.isDown = function () { return false; };
+    Up.prototype.isLeft = function () { return false; };
+    Up.prototype.isRight = function () { return false; };
+    Up.prototype.isUp = function () { return true; };
+    return Up;
+}());
+var Left = /** @class */ (function () {
+    function Left() {
+    }
+    Left.prototype.isDown = function () { return false; };
+    Left.prototype.isLeft = function () { return true; };
+    Left.prototype.isRight = function () { return false; };
+    Left.prototype.isUp = function () { return false; };
+    return Left;
+}());
+var Down = /** @class */ (function () {
+    function Down() {
+    }
+    Down.prototype.isDown = function () { return true; };
+    Down.prototype.isLeft = function () { return false; };
+    Down.prototype.isRight = function () { return false; };
+    Down.prototype.isUp = function () { return false; };
+    return Down;
+}());
 var playerx = 1;
 var playery = 1;
 var map = [
@@ -85,36 +114,48 @@ function moveVertical(dy) {
     }
 }
 function update() {
+    handleInputs();
+    updateMap();
+}
+function handleInputs() {
     while (inputs.length > 0) {
         var current = inputs.pop();
-        if (current === Input.LEFT)
-            moveHorizontal(-1);
-        else if (current === Input.RIGHT)
-            moveHorizontal(1);
-        else if (current === Input.UP)
-            moveVertical(-1);
-        else if (current === Input.DOWN)
-            moveVertical(1);
+        handleInput(current);
     }
+}
+function handleInput(input) {
+    if (input.isLeft())
+        moveHorizontal(-1);
+    else if (input.isRight())
+        moveHorizontal(1);
+    else if (input.isUp())
+        moveVertical(-1);
+    else if (input.isDown())
+        moveVertical(1);
+}
+function updateMap() {
     for (var y = map.length - 1; y >= 0; y--) {
         for (var x = 0; x < map[y].length; x++) {
-            if ((map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
-                && map[y + 1][x] === Tile.AIR) {
-                map[y + 1][x] = Tile.FALLING_STONE;
-                map[y][x] = Tile.AIR;
-            }
-            else if ((map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
-                && map[y + 1][x] === Tile.AIR) {
-                map[y + 1][x] = Tile.FALLING_BOX;
-                map[y][x] = Tile.AIR;
-            }
-            else if (map[y][x] === Tile.FALLING_STONE) {
-                map[y][x] = Tile.STONE;
-            }
-            else if (map[y][x] === Tile.FALLING_BOX) {
-                map[y][x] = Tile.BOX;
-            }
+            updateTile(x, y);
         }
+    }
+}
+function updateTile(x, y) {
+    if ((map[y][x] === Tile.STONE || map[y][x] === Tile.FALLING_STONE)
+        && map[y + 1][x] === Tile.AIR) {
+        map[y + 1][x] = Tile.FALLING_STONE;
+        map[y][x] = Tile.AIR;
+    }
+    else if ((map[y][x] === Tile.BOX || map[y][x] === Tile.FALLING_BOX)
+        && map[y + 1][x] === Tile.AIR) {
+        map[y + 1][x] = Tile.FALLING_BOX;
+        map[y][x] = Tile.AIR;
+    }
+    else if (map[y][x] === Tile.FALLING_STONE) {
+        map[y][x] = Tile.STONE;
+    }
+    else if (map[y][x] === Tile.FALLING_BOX) {
+        map[y][x] = Tile.BOX;
     }
 }
 function draw() {
@@ -170,11 +211,11 @@ var RIGHT_KEY = "ArrowRight";
 var DOWN_KEY = "ArrowDown";
 window.addEventListener("keydown", function (e) {
     if (e.key === LEFT_KEY || e.key === "a")
-        inputs.push(Input.LEFT);
+        inputs.push(new Left());
     else if (e.key === UP_KEY || e.key === "w")
-        inputs.push(Input.UP);
+        inputs.push(new Up());
     else if (e.key === RIGHT_KEY || e.key === "d")
-        inputs.push(Input.RIGHT);
+        inputs.push(new Right());
     else if (e.key === DOWN_KEY || e.key === "s")
-        inputs.push(Input.DOWN);
+        inputs.push(new Down());
 });
