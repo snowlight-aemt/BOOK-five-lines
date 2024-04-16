@@ -35,14 +35,7 @@ class Up implements Input {
 }
 class Down implements Input {
   handle() {
-    if (false)
-      moveHorizontal(-1);
-    else if (false)
-      moveHorizontal(1);
-    else if (true)
-      moveVertical(-1);
-    else if (false)
-      moveVertical(1);
+    moveVertical(-1);
   }
 }
 
@@ -115,13 +108,9 @@ function update() {
 
 function handleInputs() {
   while (inputs.length > 0) {
-    let current = inputs.pop();
-    handleInput(current);
+    let input = inputs.pop();
+    input.handle()
   }
-}
-
-function handleInput(input: Input) {
-  input.handle()
 }
 
 function updateMap() {
