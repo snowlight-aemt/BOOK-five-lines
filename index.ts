@@ -195,7 +195,7 @@ function createGraphics() {
 function drawMap(g: CanvasRenderingContext2D) {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      colorOrTile(g, x, y)
+      map[y][x].color(g);
 
       if (map[y][x] !== new Air() && map[y][x] !== new Player())
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -432,10 +432,6 @@ class Lock2 implements Tile2 {
   isLock1(): boolean { return false; }
   isKey2(): boolean { return false; }
   isLock2(): boolean  { return true; }
-}
-
-function colorOrTile(g: CanvasRenderingContext2D, x: number, y: number) {
-  map[y][x].color(g);
 }
 
 function drawPlayer(g: CanvasRenderingContext2D) {
