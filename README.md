@@ -29,7 +29,8 @@ npx tsc -w
 ```
 
 ---
-[추천 최범균 - 소개 파이브 라인스 오브 코드](https://www.youtube.com/watch?v=b4WCrnn0D8o)
+[추천 최범균 - 소개 파이브 라인스 오브 코드](https://www.youtube.com/watch?v=b4WCrnn0D8o)  
+[원본 깃 소스](https://github.com/thedrlambda/five-lines)  
 
 ---
 
