@@ -30,12 +30,12 @@ class Left implements Input {
 }
 class Up implements Input {
   handle() {
-    moveVertical(1);
+    moveVertical(-1);
   }
 }
 class Down implements Input {
   handle() {
-    moveVertical(-1);
+    moveVertical(1);
   }
 }
 
@@ -297,9 +297,9 @@ class Stone implements Tile {
   isFlux(): boolean { return false; }
   isUnbreakable(): boolean { return false; }
   isPlayer(): boolean { return false }
-  isStone(): boolean { return false; }
+  isStone(): boolean { return true; }
   isFallingStone(): boolean { return false; }
-  isBox(): boolean { return true; }
+  isBox(): boolean { return false; }
   isFallingBox(): boolean { return false; }
   isKey1(): boolean { return false; }
   isLock1(): boolean { return false; }
