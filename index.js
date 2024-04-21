@@ -21,7 +21,6 @@ var Right = /** @class */ (function () {
     }
     Right.prototype.handle = function () {
         map[playery][playerx + 1].moveHorizontal(1);
-        // moveHorizontal(1);
     };
     return Right;
 }());
@@ -30,7 +29,6 @@ var Left = /** @class */ (function () {
     }
     Left.prototype.handle = function () {
         map[playery][playerx - 1].moveHorizontal(-1);
-        // moveHorizontal(-1);
     };
     return Left;
 }());
@@ -38,7 +36,7 @@ var Up = /** @class */ (function () {
     function Up() {
     }
     Up.prototype.handle = function () {
-        moveVertical(-1);
+        map[playery - 1][playerx].moveVertical(-1);
     };
     return Up;
 }());
@@ -46,7 +44,7 @@ var Down = /** @class */ (function () {
     function Down() {
     }
     Down.prototype.handle = function () {
-        moveVertical(1);
+        map[playery + 1][playerx].moveVertical(1);
     };
     return Down;
 }());
@@ -188,8 +186,9 @@ var Air = /** @class */ (function () {
     Air.prototype.moveHorizontal = function (dx) {
         moveToTile(playerx + dx, playery);
     };
-    Air.prototype.isEdible = function () { return true; };
-    Air.prototype.isPushable = function () { return false; };
+    Air.prototype.moveVertical = function (dy) {
+        moveToTile(playerx, playery + dy);
+    };
     Air.prototype.draw = function (g, x, y) {
     };
     Air.prototype.isAir = function () { return true; };
@@ -212,8 +211,9 @@ var Flux = /** @class */ (function () {
     Flux.prototype.moveHorizontal = function (dx) {
         moveToTile(playerx + dx, playery);
     };
-    Flux.prototype.isEdible = function () { return true; };
-    Flux.prototype.isPushable = function () { return false; };
+    Flux.prototype.moveVertical = function (dy) {
+        moveToTile(playerx, playery + dy);
+    };
     Flux.prototype.draw = function (g, x, y) {
         g.fillStyle = "#ccffcc";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -238,8 +238,9 @@ var Unbreakable = /** @class */ (function () {
     Unbreakable.prototype.moveHorizontal = function (dx) {
         throw new Error("Method not implemented.");
     };
-    Unbreakable.prototype.isEdible = function () { return false; };
-    Unbreakable.prototype.isPushable = function () { return false; };
+    Unbreakable.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     Unbreakable.prototype.draw = function (g, x, y) {
         g.fillStyle = "#999999";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -264,8 +265,9 @@ var Player = /** @class */ (function () {
     Player.prototype.moveHorizontal = function (dx) {
         throw new Error("Method not implemented.");
     };
-    Player.prototype.isEdible = function () { return false; };
-    Player.prototype.isPushable = function () { return false; };
+    Player.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     Player.prototype.draw = function (g, x, y) {
     };
     Player.prototype.isAir = function () { return false; };
@@ -292,8 +294,9 @@ var Stone = /** @class */ (function () {
             moveToTile(playerx + dx, playery);
         }
     };
-    Stone.prototype.isEdible = function () { return false; };
-    Stone.prototype.isPushable = function () { return true; };
+    Stone.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     Stone.prototype.draw = function (g, x, y) {
         g.fillStyle = "#0000cc";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -318,8 +321,9 @@ var FallingStone = /** @class */ (function () {
     FallingStone.prototype.moveHorizontal = function (dx) {
         throw new Error("Method not implemented.");
     };
-    FallingStone.prototype.isEdible = function () { return false; };
-    FallingStone.prototype.isPushable = function () { return false; };
+    FallingStone.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     FallingStone.prototype.draw = function (g, x, y) {
         g.fillStyle = "#0000cc";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -348,8 +352,9 @@ var Box = /** @class */ (function () {
             moveToTile(playerx + dx, playery);
         }
     };
-    Box.prototype.isEdible = function () { return false; };
-    Box.prototype.isPushable = function () { return true; };
+    Box.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     Box.prototype.draw = function (g, x, y) {
         g.fillStyle = "#8b4513";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -374,8 +379,9 @@ var FallingBox = /** @class */ (function () {
     FallingBox.prototype.moveHorizontal = function (dx) {
         throw new Error("Method not implemented.");
     };
-    FallingBox.prototype.isEdible = function () { return false; };
-    FallingBox.prototype.isPushable = function () { return false; };
+    FallingBox.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     FallingBox.prototype.draw = function (g, x, y) {
         g.fillStyle = "#8b4513";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -401,8 +407,10 @@ var Key1 = /** @class */ (function () {
         removeLock1();
         moveToTile(playerx + dx, playery);
     };
-    Key1.prototype.isEdible = function () { return false; };
-    Key1.prototype.isPushable = function () { return false; };
+    Key1.prototype.moveVertical = function (dy) {
+        removeLock1();
+        moveToTile(playerx, playery + dy);
+    };
     Key1.prototype.draw = function (g, x, y) {
         g.fillStyle = "#ffcc00";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -427,8 +435,9 @@ var Lock1 = /** @class */ (function () {
     Lock1.prototype.moveHorizontal = function (dx) {
         throw new Error("Method not implemented.");
     };
-    Lock1.prototype.isEdible = function () { return false; };
-    Lock1.prototype.isPushable = function () { return false; };
+    Lock1.prototype.moveVertical = function (dy) {
+        throw new Error("Method not implemented.");
+    };
     Lock1.prototype.draw = function (g, x, y) {
         g.fillStyle = "#ffcc00";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -454,8 +463,10 @@ var Key2 = /** @class */ (function () {
         removeLock2();
         moveToTile(playerx + dx, playery);
     };
-    Key2.prototype.isEdible = function () { return false; };
-    Key2.prototype.isPushable = function () { return false; };
+    Key2.prototype.moveVertical = function (dy) {
+        removeLock2();
+        moveToTile(playerx, playery + dy);
+    };
     Key2.prototype.draw = function (g, x, y) {
         g.fillStyle = "#00ccff";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -480,8 +491,8 @@ var Lock2 = /** @class */ (function () {
     Lock2.prototype.moveHorizontal = function (dx) {
         throw new Error("Method not implemented.");
     };
-    Lock2.prototype.isEdible = function () { return false; };
-    Lock2.prototype.isPushable = function () { return false; };
+    Lock2.prototype.moveVertical = function (dy) {
+    };
     Lock2.prototype.draw = function (g, x, y) {
         g.fillStyle = "#00ccff";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);

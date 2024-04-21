@@ -21,23 +21,21 @@ interface Input {
 class Right implements Input {
   handle() {
     map[playery][playerx + 1].moveHorizontal(1)
-    // moveHorizontal(1);
   }
 }
 class Left implements Input {
   handle() {
     map[playery][playerx - 1].moveHorizontal(-1)
-    // moveHorizontal(-1);
   }
 }
 class Up implements Input {
   handle() {
-    moveVertical(-1);
+    map[playery -1][playerx].moveVertical(-1);
   }
 }
 class Down implements Input {
   handle() {
-    moveVertical(1);
+    map[playery + 1][playerx].moveVertical(1);
   }
 }
 
@@ -185,9 +183,8 @@ function drawMap(g: CanvasRenderingContext2D) {
 
 interface Tile {
   moveHorizontal(dx: number): void;
+  moveVertical(dx: number): void;
   draw(g: CanvasRenderingContext2D, x: number, y: number): void;
-  isEdible(): boolean;
-  isPushable(): boolean;
   isAir(): boolean;
   isFlux(): boolean;
   isUnbreakable(): boolean;
@@ -206,8 +203,9 @@ class Air implements Tile {
   moveHorizontal(dx: number): void {
     moveToTile(playerx + dx, playery);
   }
-  isEdible(): boolean {return true;}
-  isPushable(): boolean {return false;}
+  moveVertical(dy: number): void {
+    moveToTile(playerx, playery + dy);
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
   }
   isAir(): boolean {return true}
@@ -228,8 +226,9 @@ class Flux implements Tile {
   moveHorizontal(dx: number): void {
     moveToTile(playerx + dx, playery);
   }
-  isEdible(): boolean {return true;}
-  isPushable(): boolean {return false}
+  moveVertical(dy: number): void {
+    moveToTile(playerx, playery + dy);
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#ccffcc";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -252,8 +251,9 @@ class Unbreakable implements Tile {
   moveHorizontal(dx: number): void {
     throw new Error("Method not implemented.");
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#999999";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -276,8 +276,9 @@ class Player implements Tile {
   moveHorizontal(dx: number): void {
     throw new Error("Method not implemented.");
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
   }
   isAir(): boolean {return false}
@@ -302,8 +303,9 @@ class Stone implements Tile {
       moveToTile(playerx + dx, playery);
     }
   }
-  isEdible(): boolean {return false;}
-  isPushable(): boolean {return true;}
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#0000cc";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -326,8 +328,9 @@ class FallingStone implements Tile {
   moveHorizontal(dx: number): void {
     throw new Error("Method not implemented.");
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#0000cc";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -354,8 +357,9 @@ class Box implements Tile {
       moveToTile(playerx + dx, playery);
     }
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean {return true;}
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#8b4513";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -378,8 +382,9 @@ class FallingBox implements Tile {
   moveHorizontal(dx: number): void {
     throw new Error("Method not implemented.");
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#8b4513";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -403,8 +408,10 @@ class Key1 implements Tile {
     removeLock1();
     moveToTile(playerx + dx, playery);
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    removeLock1();
+    moveToTile(playerx, playery + dy);
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#ffcc00";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -427,8 +434,9 @@ class Lock1 implements Tile {
   moveHorizontal(dx: number): void {
     throw new Error("Method not implemented.");
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    throw new Error("Method not implemented.");
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#ffcc00";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -452,8 +460,10 @@ class Key2 implements Tile {
     removeLock2();
     moveToTile(playerx + dx, playery);
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+    removeLock2();
+    moveToTile(playerx, playery + dy);
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#00ccff";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -476,8 +486,8 @@ class Lock2 implements Tile {
   moveHorizontal(dx: number): void {
     throw new Error("Method not implemented.");
   }
-  isEdible(): boolean { return false; }
-  isPushable(): boolean { return false; }
+  moveVertical(dy: number): void {
+  }
   draw(g: CanvasRenderingContext2D, x: number, y: number): void {
     g.fillStyle = "#00ccff";
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
